@@ -13,40 +13,42 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AprilTagStats extends SubsystemBase {
 
-  PhotonCamera frontLogi = new PhotonCamera("Microsoft_LifeCam_HD-3000");
-  PhotonCamera backLogi = new PhotonCamera("HD_Pro_Webcam_C920");
+  PhotonCamera driverCam = new PhotonCamera("HD_Pro_Webcam_C920");
+  PhotonCamera aprilTagCam = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
-  public AprilTagStats() {}
+  public AprilTagStats() {
+    driverCam.getDriverMode();
+  }
 
   public void periodic() {} // torturous method, not even the KGB approves
 
   public void getStats() {
-    PhotonPipelineResult frontResult = frontLogi.getLatestResult();
-    PhotonPipelineResult backResult = backLogi.getLatestResult();
-    if (frontResult.hasTargets()) { // does the image have any viable targets?
-      PhotonTrackedTarget target = frontResult.getBestTarget(); // if it does, get the most identifiable target
-      // get the stats from it
-      double yaw = target.getYaw();
-      double pitch = target.getPitch();
-      Transform3d camToTarget = target.getBestCameraToTarget();
-      double[] xyz = {camToTarget.getX(), camToTarget.getY(), camToTarget.getZ()};
-      // print it out
-      SmartDashboard.putNumber("Front Cam Yaw", yaw);
-      SmartDashboard.putNumber("Front Cam Pitch", pitch);
-      SmartDashboard.putNumberArray("xyz Coordinates From Front", xyz);
-      System.out.println("this works very well!");
-    }
+    PhotonPipelineResult backResult = aprilTagCam.getLatestResult();
+    
     if (backResult.hasTargets()) { // does the image have any viable targets?
       PhotonTrackedTarget target = backResult.getBestTarget(); // if it does, get the most identifiable target
       // get the stats from it
+      int ID = target.getFiducialId();
       double yaw = target.getYaw();
       double pitch = target.getPitch();
       Transform3d camToTarget = target.getBestCameraToTarget();
-      double[] xyz = {camToTarget.getX(), camToTarget.getY(), camToTarget.getZ()};
-      // print it out
+      // add it to the dashboard
       SmartDashboard.putNumber("Back Cam Yaw", yaw);
       SmartDashboard.putNumber("Back Cam Pitch", pitch);
-      SmartDashboard.putNumberArray("xyz Coordinates From Back", xyz);
+      SmartDashboard.putNumber("x Coordinate From Back", camToTarget.getX());
+      SmartDashboard.putNumber("y Coordinate From Back", camToTarget.getY());
+      SmartDashboard.putNumber("z Coordinate From Back", camToTarget.getZ());
+      SmartDashboard.putNumber("ID Number", ID);
     }
   }
+
+  public double getYaw() {return aprilTagCam.getLatestResult().getBestTarget().getYaw();}
+  public double getPitch() {return aprilTagCam.getLatestResult().getBestTarget().getPitch();}
+  public double[] getXYZ() {
+    double[] xyz = {aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getX(),
+                    aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getY(),
+                    aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getZ()};
+    return xyz;
+  }
+  public int getID() {return aprilTagCam.getLatestResult().getBestTarget().getFiducialId();}
 }
