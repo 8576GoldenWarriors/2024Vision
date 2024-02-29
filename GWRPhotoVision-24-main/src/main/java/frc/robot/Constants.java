@@ -16,4 +16,16 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class ledConstants
+  {
+    public static final int addressableLEDPort = 0;
+    public static final int intakeInputChannel = 0;
+    public static final int transportInputChannel = 0;
+    public static final int ledBufferLength = 300;
+    public static final int idealAprilTagYawRangeLow = 0;
+    public static final int idealAprilTagYawRangeHigh = 0;
+    public static final int idealAprilTagZDistanceLow = 0;
+    public static final int idealAprilTagZDistanceHigh = 0;
+  }
 }
