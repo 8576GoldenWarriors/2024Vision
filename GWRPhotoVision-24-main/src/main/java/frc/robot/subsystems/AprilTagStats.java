@@ -10,9 +10,11 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class AprilTagStats extends SubsystemBase {
 
+  //set cameras 
   PhotonCamera driverCam = new PhotonCamera("HD_Pro_Webcam_C920");
   PhotonCamera aprilTagCam = new PhotonCamera("Microsoft_LifeCam_HD-3000");
 
@@ -20,19 +22,21 @@ public class AprilTagStats extends SubsystemBase {
     driverCam.getDriverMode();
   }
 
-  public void periodic() {} // torturous method, not even the KGB approves
-
   public void getStats() {
     PhotonPipelineResult backResult = aprilTagCam.getLatestResult();
     
-    if (backResult.hasTargets()) { // does the image have any viable targets?
-      PhotonTrackedTarget target = backResult.getBestTarget(); // if it does, get the most identifiable target
-      // get the stats from it
+    // checks if camera sees a april tag
+    if (backResult.hasTargets()) { 
+      // gets closest april tag that is visible
+      PhotonTrackedTarget target = backResult.getBestTarget(); 
+      
+      // get data from camera
       int ID = target.getFiducialId();
       double yaw = target.getYaw();
       double pitch = target.getPitch();
       Transform3d camToTarget = target.getBestCameraToTarget();
-      // add it to the dashboard
+      
+      // push to smart dashboard
       SmartDashboard.putNumber("Back Cam Yaw", yaw);
       SmartDashboard.putNumber("Back Cam Pitch", pitch);
       SmartDashboard.putNumber("x Coordinate From Back", camToTarget.getX());
@@ -42,13 +46,31 @@ public class AprilTagStats extends SubsystemBase {
     }
   }
 
-  public double getYaw() {return aprilTagCam.getLatestResult().getBestTarget().getYaw();}
-  public double getPitch() {return aprilTagCam.getLatestResult().getBestTarget().getPitch();}
-  public double[] getXYZ() {
-    double[] xyz = {aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getX(),
-                    aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getY(),
-                    aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getZ()};
-    return xyz;
+  public double getYaw() {
+    return aprilTagCam.getLatestResult().getBestTarget().getYaw();
   }
-  public int getID() {return aprilTagCam.getLatestResult().getBestTarget().getFiducialId();}
+  
+  public double getPitch() {
+    return aprilTagCam.getLatestResult().getBestTarget().getPitch();
+  }
+  
+  public double[] getXYZ() {
+    return new double[] {aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getX(),
+                         aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getY(),
+                         aprilTagCam.getLatestResult().getBestTarget().getBestCameraToTarget().getZ()};
+  }
+  
+  public int getID() {
+    return aprilTagCam.getLatestResult().getBestTarget().getFiducialId();
+  }
+
+  public boolean isIdealYaw() {
+    return getYaw() > Constants.ledConstants.idealAprilTagYawRangeLow &&
+           getYaw() < Constants.ledConstants.idealAprilTagYawRangeHigh;
+  }
+
+  public boolean isIdealDistance() {
+    return Robot.ats.getXYZ()[2] > Constants.ledConstants.idealAprilTagZDistanceLow &&
+           Robot.ats.getXYZ()[2] < Constants.ledConstants.idealAprilTagZDistanceHigh;
+  }
 }
