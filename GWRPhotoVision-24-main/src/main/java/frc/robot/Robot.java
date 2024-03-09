@@ -3,13 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
+import org.photonvision.PhotonCamera;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.LEDManager;
 import frc.robot.subsystems.AprilTagStats;
-import frc.robot.commands.ledDisplay;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     ats.getStats(); // gets the yaw, pitch, and XYZ coords of the bot
-    ledDisplay.shootingColor();
+    LEDManager.setLEDS();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
