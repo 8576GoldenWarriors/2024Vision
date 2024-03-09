@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 public class AprilTagStats extends SubsystemBase {
 
@@ -44,6 +45,11 @@ public class AprilTagStats extends SubsystemBase {
       SmartDashboard.putNumber("z Coordinate From Back", camToTarget.getZ());
       SmartDashboard.putNumber("ID Number", ID);
     }
+  }
+
+  public boolean hasTarget()
+  {
+    return aprilTagCam.getLatestResult().hasTargets();
   }
 
   public double getYaw() {
