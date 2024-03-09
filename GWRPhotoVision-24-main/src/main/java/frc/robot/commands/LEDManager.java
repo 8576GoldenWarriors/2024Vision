@@ -40,7 +40,7 @@ public class LEDManager extends SubsystemBase {
     boolean isIdealDistance = Robot.ats.isIdealDistance();
 
     //If april tag is present - change the 0 to the april tag under speaker
-    if(Robot.ats.hasTarget() && Robot.ats.getID() == 0){
+    if(Robot.ats.hasTarget() && Robot.ats.getID() == 7){
       // if yaw is in range and distance(z) is in range
       if(isIdealDistance && isIdealYaw){
         for(int i = 0; i < ledBuffer.getLength(); i++){
